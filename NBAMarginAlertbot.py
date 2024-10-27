@@ -87,7 +87,10 @@ def input_team(call):
         bot.delete_message(chat_id, call.message.message_id)
         # Send a message summarizing selected teams
         selected_teams = user_teams.get(chat_id, [])
-        bot.send_message(chat_id, f"Teams set to monitor: {', '.join(selected_teams)}.")
+        if selected_teams:
+            bot.send_message(chat_id, f"Teams set to monitor: {', '.join(selected_teams)}.")
+        else:
+            bot.send_message(chat_id, f"Teams set to monitor: None .")
         # Start monitoring for each team
         monitor_games(chat_id,selected_teams)  # Call monitor_games per team as needed
     else:
