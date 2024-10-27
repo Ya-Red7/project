@@ -29,7 +29,7 @@ def webhook():
 # Example of setting the webhook
 @app.route('/set_webhook', methods=['GET', 'POST'])
 def set_webhook():
-    webhook_url = f"https://https://project-9e2j.onrender.com/{BOT_TOKEN}"  # Replace <YOUR_RENDER_APP_URL> with Render URL
+    webhook_url = f"https://project-9e2j.onrender.com/{BOT_TOKEN}"  # Replace <YOUR_RENDER_APP_URL> with Render URL
     success = bot.set_webhook(url=webhook_url)
     return 'Webhook setup' if success else 'Webhook setup failed', 200
 
