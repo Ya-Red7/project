@@ -290,7 +290,7 @@ def monitor_games(chat_id, team_names):
 
 
 
-# Start the bot polling
+
 print("bot runnin...")
 # Webhook route to receive updates
 bot.polling()
