@@ -6,7 +6,9 @@ from datetime import datetime
 from dotenv import load_dotenv
 import json
 from flask import Flask, request
-from gevent.pywsgi import WSGIServer
+#from gevent.pywsgi import WSGIServer
+from waitress import serve
+import logging
 load_dotenv()
 
 # Get API tokens from environment variables
@@ -18,6 +20,7 @@ team_data = {}
 bot = telebot.TeleBot(BOT_TOKEN)
 alert_margin = 10 
 
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(message)s')
 app = Flask(__name__)
 
 # Define a route for webhook updates
@@ -316,7 +319,7 @@ print("bot runnin...")
 # Run the Flask app
 if __name__ == "__main__":
     #app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-    #from waitress import serve
-    #serve(app, host="0.0.0.0", port=8080)
-    http_server = WSGIServer(('', 5000), app)
-    http_server.serve_forever()
+    
+    serve(app, host='0.0.0.0', port=5000)
+    #http_server = WSGIServer(('', 5000), app)
+    #http_server.serve_forever()
