@@ -7,32 +7,26 @@ from dotenv import load_dotenv
 from flask import Flask, request
 import logging
 
-# Load environment variables
 load_dotenv()
 
-# Get API tokens from environment variables
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 ODDS_API_KEY = os.getenv("ODDS_API_KEY")
 BALLDONTLIE_API_KEY = os.getenv("BALLDONTLIE")
-team_names = []
 team_data = {}
 bot = telebot.TeleBot(BOT_TOKEN)
-alert_margin = 10  # The margin to trigger alerts
+alert_margin = 10
+user_teams = {}
 
-# Command and team data handlers
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.reply_to(message, "Hello! I'll notify you if your NBA team is trailing by more than the set margin.")
     bot.reply_to(message, "Please 👉🏾 /set_team to set up alerts.")
 
-# Dictionary to hold user-selected teams
-user_teams = {}
-
 @bot.message_handler(commands=['set_team'])
 def set_team(message):
     markup = telebot.types.InlineKeyboardMarkup(row_width=5)
     teams = [
-        ("Atlanta Hawks", "Atlanta Hawks"), ("Boston Celtics", "Boston Celtics"), 
+        ("Atlanta Hawks", "Atlanta Hawks"), ("Boston Celtics", "Boston Celtics"),
         ("Brooklyn Nets", "Brooklyn Nets"), ("Charlotte Hornets", "Charlotte Hornets"),
         ("Chicago Bulls", "Chicago Bulls"), ("Cleveland Cavaliers", "Cleveland Cavaliers"),
         ("Dallas Mavericks", "Dallas Mavericks"), ("Denver Nuggets", "Denver Nuggets"),
@@ -72,7 +66,6 @@ def input_team(call):
             user_teams[chat_id].append(call.data)
             bot.answer_callback_query(call.id, f"{call.data} added to your list.")
 
-# Spread fetching and monitoring functions
 def get_nba_spreads():
     odds_url = f"https://api.the-odds-api.com/v4/sports/basketball_nba/odds/?apiKey={ODDS_API_KEY}&regions=us&markets=spreads"
     response = requests.get(odds_url)
@@ -129,7 +122,6 @@ def monitor_games(chat_id, team_names):
                 calculate_margin(team_name, pre_game_spread, date_today, chat_id)
                 time.sleep(30)
 
-# Flask app for webhooks
 app = Flask(__name__)
 
 @app.route(f'/{BOT_TOKEN}', methods=['POST'])
@@ -144,7 +136,6 @@ def set_webhook():
     success = bot.set_webhook(url=webhook_url)
     return 'Webhook setup' if success else 'Webhook setup failed', 200
 
-# Run the app locally
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(message)s')
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
