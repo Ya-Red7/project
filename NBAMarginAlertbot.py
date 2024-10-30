@@ -46,7 +46,6 @@ def set_team(message):
     for team_name, callback_data in teams:
         button = telebot.types.InlineKeyboardButton(text=team_name, callback_data=callback_data)
         markup.add(button)
-
     bot.send_message(message.chat.id, "Choose your NBA team:", reply_markup=markup)
     user_teams[message.chat.id] = []
 
