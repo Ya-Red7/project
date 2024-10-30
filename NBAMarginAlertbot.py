@@ -4,7 +4,6 @@ import requests
 import time
 from datetime import datetime
 from dotenv import load_dotenv
-import json
 from flask import Flask, request
 import logging
 
