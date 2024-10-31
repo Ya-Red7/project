@@ -1,8 +1,22 @@
 {
+  "name": "NBA-Margin-Alert-Bot",
+  "version": "1.0.0",
+  "description": "Telegram bot for NBA alerts",
+  "main": "nodeversion.js",
+  "scripts": {
+    "start": "node nodeversion.js",
+    "start:prod": "node nodeversion.js"
+  },
   "dependencies": {
     "axios": "^1.7.7",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
     "node-telegram-bot-api": "^0.66.0"
-  }
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "keywords": [],
+  "author": "Yared W",
+  "license": "ISC"
 }
