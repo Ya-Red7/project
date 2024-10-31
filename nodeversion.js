@@ -2,6 +2,9 @@ const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 const dotenv = require('dotenv');
 const dayjs = require('dayjs');
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
 
 dotenv.config();
 
@@ -10,7 +13,23 @@ const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const ODDS_API_KEY = process.env.ODDS_API_KEY;
 const BALLDONTLIE_API_KEY = process.env.BALLDONTLIE;
 
-const bot = new TelegramBot(BOT_TOKEN, { polling: true });
+//const bot = new TelegramBot(BOT_TOKEN, { polling: true });
+const bot = new TelegramBot(BOT_TOKEN, { webHook: true });
+// Set the webhook URL for your bot
+bot.setWebHook(`https://project-80ea.onrender.com/bot${BOT_TOKEN}`);
+// Optionally, log webhook setup confirmation
+console.log(`Webhook set to https://project-80ea.onrender.com/bot${BOT_TOKEN}`);
+
+
+
+app.use(bodyParser.json());
+// Route to handle webhook requests from Telegram
+app.post(`/bot${BOT_TOKEN}`, (req, res) => {
+    bot.processUpdate(req.body);
+    res.sendStatus(200); // Respond with status 200 to confirm receipt
+});
+
+
 const alertMargin = 10;
 let teamData = {};
 let userTeams = {};
@@ -235,5 +254,10 @@ async function monitorGames(chatId, teamNames) {
     setTimeout(() => monitorGames(chatId, teamNames), 300000); // Repeat every 5 minutes
 }
 
+// Listen to the Render-assigned PORT or default to 3000
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Bot is listening on port ${PORT}`);
+});
 
 console.log("Bot is running...");
