@@ -1,4 +1,4 @@
-import os
+'''import os
 import telebot
 import requests
 import time
@@ -138,3 +138,4 @@ def set_webhook():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(message)s')
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+'''
