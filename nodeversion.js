@@ -5,7 +5,8 @@ const dayjs = require('dayjs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-
+const PORT = process.env.PORT || 3000;
+app.use(bodyParser.json());
 dotenv.config();
 
 // Load API tokens from environment variables
@@ -13,16 +14,19 @@ const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const ODDS_API_KEY = process.env.ODDS_API_KEY;
 const BALLDONTLIE_API_KEY = process.env.BALLDONTLIE;
 
+
 //const bot = new TelegramBot(BOT_TOKEN, { polling: true });
-const bot = new TelegramBot(BOT_TOKEN, { webHook: true });
+const alertMargin = 10;
+let teamData = {};
+let userTeams = {};
+
+const bot = new TelegramBot(BOT_TOKEN, { webHook: true,polling: false });
+
 // Set the webhook URL for your bot
 bot.setWebHook(`https://project-80ea.onrender.com/bot${BOT_TOKEN}`);
+
 // Optionally, log webhook setup confirmation
 console.log(`Webhook set to https://project-80ea.onrender.com/bot${BOT_TOKEN}`);
-
-
-
-app.use(bodyParser.json());
 // Route to handle webhook requests from Telegram
 app.post(`/bot${BOT_TOKEN}`, (req, res) => {
     bot.processUpdate(req.body);
@@ -30,14 +34,11 @@ app.post(`/bot${BOT_TOKEN}`, (req, res) => {
 });
 
 
-const alertMargin = 10;
-let teamData = {};
-let userTeams = {};
-
 // Start command
 bot.onText(/\/start/, (msg) => {
     bot.sendMessage(msg.chat.id, "Hello! I'll notify you if your NBA team is trailing by more than the set margin.");
     bot.sendMessage(msg.chat.id, "Please 👉🏾 /set_team to set up alerts.");
+    
 });
 
 // Set team command with inline keyboard
@@ -254,10 +255,9 @@ async function monitorGames(chatId, teamNames) {
     setTimeout(() => monitorGames(chatId, teamNames), 300000); // Repeat every 5 minutes
 }
 
+
 // Listen to the Render-assigned PORT or default to 3000
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Bot is listening on port ${PORT}`);
 });
-
 console.log("Bot is running...");
